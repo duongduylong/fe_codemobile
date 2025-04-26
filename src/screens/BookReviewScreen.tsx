@@ -1,50 +1,45 @@
 import { FontAwesome } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native'
 import { LinearGradient } from 'expo-linear-gradient'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-
 import { Dimensions } from 'react-native'
+import { API_URL } from 'src/environment'
 
 const { width, height } = Dimensions.get('window')
-const reviews = [
-  {
-    id: 1,
-    name: 'Rowling',
-    avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-    rating: 5,
-    date: '20/05/2024',
-    comment: 'Sách hay dễ đọc và rất ý nghĩa.'
-  },
-  {
-    id: 2,
-    name: 'Rowling',
-    avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-    rating: 5,
-    date: '20/05/2024',
-    comment: 'Sách hay dễ đọc và rất ý nghĩa.'
-  },
-  {
-    id: 3,
-    name: 'Rowling',
-    avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-    rating: 5,
-    date: '20/05/2024',
-    comment: 'Sách hay dễ đọc và rất ý nghĩa.'
-  },
-  {
-    id: 4,
-    name: 'Rowling',
-    avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-    rating: 5,
-    date: '20/05/2024',
-    comment: 'Sách hay dễ đọc và rất ý nghĩa.'
-  }
-]
+
 
 export default function BookReviewScreen() {
   const navigation = useNavigation()
+  const route = useRoute()
+  const { bookId } = route.params
+
+  const [reviews, setReviews] = useState([])
+  const [book, setBook] = useState([])
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchReviews = async () => {
+        try {
+          const response = await fetch(`${API_URL}/api/reviews/${bookId}`)
+          const data = await response.json()
+          setReviews(data.reviews || [])
+
+          const bookResponse = await fetch(`${API_URL}/api/books/${bookId}`)
+          const bookData = await bookResponse.json()
+          setBook(bookData)
+        } catch (error) {
+          console.error('Lỗi khi lấy review:', error)
+        }
+      }
+
+      fetchReviews()
+    }, [bookId])
+  )
+  if (!book) {
+      return <Text>Đang tải...</Text>
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.innerContainer}>
@@ -54,14 +49,13 @@ export default function BookReviewScreen() {
             <Text style={{ color: '#fff', fontSize: 18, marginLeft: 10 }}>Giới thiệu</Text>
           </TouchableOpacity>
           <Image
-            source={require('../../assets/book-imgs/the-arsonist.png')}
+            source={{ uri: book.coverImage }}
             style={styles.bookImage}
             resizeMode="contain"
           />
-
           <TouchableOpacity
             style={styles.readButton}
-            onPress={() => navigation.navigate('BookReading')}
+            onPress={() => navigation.navigate('BookDetail',{bookId})}
           >
             <Text style={styles.readButtonText}>Đọc sách</Text>
           </TouchableOpacity>
@@ -70,14 +64,14 @@ export default function BookReviewScreen() {
         <View style={styles.reviewHeader}>
           <Text style={styles.title}>Độc giả đánh giá</Text>
           <View style={styles.ratingRow}>
-            <Text style={styles.ratingNumber}>5.0</Text>
+            <Text style={styles.ratingNumber}>{book.rating}</Text>
             <StarRating rating={5} />
           </View>
           <View style={styles.reviewRow}>
-            <Text style={styles.subText}>4 đánh giá</Text>
+            <Text style={styles.subText}>{reviews.length} đánh giá</Text>
             <TouchableOpacity
               style={styles.reviewButton}
-              onPress={() => navigation.navigate('Feedback')}
+              onPress={() => navigation.navigate('Feedback',{bookId})}
             >
               <FontAwesome name="commenting-o" size={16} color="#333" />
               <Text style={styles.reviewButtonText}> Đánh giá</Text>
@@ -86,15 +80,20 @@ export default function BookReviewScreen() {
         </View>
 
         <View>
-          {reviews.map((item) => (
-            <View key={item.id} style={styles.reviewCard}>
+          {reviews.map((item: any) => (
+            <View key={item._id} style={styles.reviewCard}>
               <View style={styles.reviewHeaderRow}>
-                <Image source={{ uri: item.avatar }} style={styles.avatar} />
+                <Image
+                  source={require('../../assets/anh1.jpg')}
+                  style={styles.avatar}
+                />
                 <View style={styles.reviewInfo}>
-                  <Text style={styles.reviewerName}>{item.name}</Text>
+                  <Text style={styles.reviewerName}>{item.userId?.username || 'Ẩn danh'}</Text>
                   <StarRating rating={item.rating} />
                 </View>
-                <Text style={styles.reviewDate}>{item.date}</Text>
+                <Text style={styles.reviewDate}>
+                  {new Date(item.createdAt).toLocaleDateString('vi-VN')}
+                </Text>
               </View>
               <Text style={styles.reviewText}>{item.comment}</Text>
             </View>
@@ -114,7 +113,6 @@ const StarRating = ({ rating }: { rating: number }) => {
     </View>
   )
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

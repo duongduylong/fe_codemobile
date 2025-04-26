@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { LinearGradient } from 'expo-linear-gradient'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Dimensions,
   Image,
@@ -11,11 +11,39 @@ import {
   View
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { API_URL } from 'src/environment'
 
 const { width, height } = Dimensions.get('window')
 
 const PreviewScreen: React.FC = () => {
   const navigation = useNavigation()
+  const route = useRoute()
+  const { bookId } = route.params
+  console.log(bookId);
+  const [book, setBook] = useState<any>(null)
+  const [chapters, setChapters] = useState<any[]>([])
+  useEffect(() => {
+    const fetchBookDetails = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/books/${bookId}`)
+        const data = await response.json()
+        setBook(data) 
+
+        const chaptersResponse = await fetch(`${API_URL}/api/chapters/${bookId}`)
+        const chaptersData = await chaptersResponse.json()
+        setChapters(chaptersData) // Lưu danh sách chương
+      } catch (error) {
+        console.error('Error fetching book details:', error)
+      }
+    }
+
+    fetchBookDetails()
+  }, [bookId])
+
+  if (!book) {
+      return <Text>Đang tải...</Text>
+  }
+
 
   return (
     <ScrollView style={styles.container}>
@@ -27,34 +55,28 @@ const PreviewScreen: React.FC = () => {
             <Text style={{ color: '#fff', fontSize: 18, marginLeft: 10 }}>Giới thiệu</Text>
           </TouchableOpacity>
           <Image
-            source={require('../../assets/book-imgs/the-arsonist.png')}
+            source={{ uri: book.coverImage }}
             style={styles.bookImage}
             resizeMode="contain"
           />
         </LinearGradient>
 
         {/* Tiêu đề và tác giả */}
-        <Text style={styles.title}>The Arsonist</Text>
-        <Text style={styles.author}>Chloe Hooper</Text>
+        <Text style={styles.title}>{book.title}t</Text>
+        <Text style={styles.author}>{book.author.name}</Text>
 
         {/* Divider */}
         <View style={styles.divider} />
 
         {/* Mô tả sách */}
         <Text style={styles.description}>
-          "The Arsonist" của Chloe Hopper là một cuốn tiểu thuyết đầy kịch tính và bí ẩn, xoay quanh
-          một người phụ nữ tên là Emma, người đang tìm kiếm sự thật về một vụ hỏa hoạn mà cô tin là
-          do ai đó cố tình gây ra. Cuộc hành trình của Emma dần hé lộ những bí mật đen tối và những
-          mối quan hệ phức tạp trong quá khứ, dẫn cô đến những sự thật khủng khiếp mà cô không thể
-          ngờ tới. Tác phẩm khám phá những chủ đề về tội ác, sự phản bội, và những lựa chọn khó khăn
-          mà con người phải đối mặt khi đứng trước sự thật. Với lối viết căng thẳng và những tình
-          tiết đầy bất ngờ, "The Arsonist" hứa hẹn sẽ cuốn hút người đọc từ đầu đến cuối.
+          {book.description}
         </Text>
 
         {/* Nút Đọc sách */}
         <TouchableOpacity
           style={styles.readButton}
-          onPress={() => navigation.navigate('BookReading')}
+          onPress={() => navigation.navigate('BookDetail',{bookId})}
         >
           <Text style={styles.readButtonText}>Đọc sách</Text>
         </TouchableOpacity>

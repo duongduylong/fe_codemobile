@@ -6,7 +6,8 @@ import HomeScreen from 'src/screens/HomeScreen'
 import NoteScreen from 'src/screens/NoteScreen'
 import PreviewScreen from 'src/screens/PreviewScreen'
 import ShowDetailBookScreen from 'src/screens/ShowDetailBookScreen'
-
+import AuthorBooksScreen from 'src/screens/AuthorBooksScreen'
+import SearchResultsScreen from 'src/screens/SearchResultsScreen'
 export type HomeStackParamList = {
   Home: undefined
   BookDetail: { bookId: string }
@@ -15,6 +16,7 @@ export type HomeStackParamList = {
   Feedback: undefined
   BookReading: undefined
   NoteScreen: undefined
+  AuthorBooks:undefined
 }
 
 export default function HomeNavigator() {
@@ -53,9 +55,21 @@ export default function HomeNavigator() {
       />
 
       <Stack.Screen
+        options={{ title: 'Danh sách sách của tác giả', headerShown: false }}
+        name="AuthorBooks"
+        component={AuthorBooksScreen}
+      />
+
+      <Stack.Screen
         options={{ title: 'Ghi chú', headerShown: false }}
         name="NoteScreen"
         component={NoteScreen}
+      />
+
+      <Stack.Screen 
+        options={{ title: 'Search', headerShown: false }} 
+        name="SearchResults" 
+        component={SearchResultsScreen} 
       />
     </Stack.Navigator>
   )

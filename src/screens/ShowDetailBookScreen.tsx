@@ -104,7 +104,7 @@ const ShowDetailBookScreen: React.FC = () => {
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.previewButton}
-            onPress={() => navigation.navigate('Preview')}
+            onPress={() => navigation.navigate('Preview',{bookId})}
           >
             <Text style={styles.previewButtonText}>Giới thiệu</Text>
           </TouchableOpacity>
@@ -125,7 +125,7 @@ const ShowDetailBookScreen: React.FC = () => {
           </View>
           <TouchableOpacity
             style={styles.reviewsButton}
-            onPress={() => navigation.navigate('Review')}
+            onPress={() => navigation.navigate('Review',{bookId})}
           >
             <Text style={styles.reviewsButtonText}>Xem tất cả đánh giá</Text>
           </TouchableOpacity>

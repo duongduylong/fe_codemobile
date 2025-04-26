@@ -137,7 +137,7 @@ const RankingView = () => {
                 <Text style={styles.title}>{book.title || 'Không có tiêu đề'}</Text>
                 <Text style={styles.author}>Tác giả: {book.author.name || 'Không rõ'}</Text>
                 <Text style={styles.rating}>Đánh giá: {book.rating ?? 'Chưa có'}</Text>
-                <Text style={styles.price}>Số chương: {book.totalChapters ?? 0}</Text>
+                <Text style={styles.chapter}>Số chương: {book.totalChapters ?? 0}</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     color: '#f39c12',
     marginBottom: 4,
   },
-  price: {
+  chapter: {
     fontSize: 14,
     color: '#666',
   },

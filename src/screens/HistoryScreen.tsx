@@ -142,7 +142,7 @@ const HistoryScreen = () => {
             <Text style={styles.title}>{book.title || 'Không có tiêu đề'}</Text>
             <Text style={styles.author}>Tác giả: {book.author.name || 'Không rõ'}</Text>
             <Text style={styles.rating}>Đánh giá: {book.rating ?? 'Chưa có'}</Text>
-            <Text style={styles.price}>Số chương: {book.totalChapters ?? 0}</Text>
+            <Text style={styles.chapter}>Số chương: {book.totalChapters ?? 0}</Text>
 
             {selectedTab === 'reading' && chapter && (
               <TouchableOpacity
@@ -185,16 +185,18 @@ const HistoryScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* {loading ? (
-        <Text>Đang tải dữ liệu...</Text>
-      ) : ( */}
+      {data.length === 0 ? (
+        <View style={styles.noDataContainer}>
+          <Text style={styles.noDataText}>Không có sách {selectedTab === 'reading' ? 'đang đọc' : 'đã đọc'}</Text>
+        </View>
+      ) : (
         <FlatList
           data={data}
           renderItem={renderItem}
           keyExtractor={(item) => item.bookId._id.toString()}
           style={styles.flatList}
         />
-      {/* )} */}
+      )}
 
       <View style={styles.footer}>
           {renderPagination()}
@@ -303,11 +305,6 @@ const styles = StyleSheet.create({
     color: '#f39c12',
     marginBottom: 4,
   },
-  price: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 4,
-  },
   chapter: {
     fontSize: 14,
     color: '#666',
@@ -330,6 +327,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#007bff',
     marginHorizontal: 10,
+  },
+  noDataText: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#888',
+  },
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
 });
 export default HistoryScreen;
