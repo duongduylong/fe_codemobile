@@ -13,6 +13,7 @@ import HistoryNavigator from './HistoryNavigator'
 import RankingNavigator from './RankingNavigator'
 import ProfileScreen from 'src/screens/ProfileScreen'
 import { HeaderRight } from 'src/components/HeaderRight'
+import ProfileNavigator from 'src/navigation/ProfileNavigator'
 const Drawer = createDrawerNavigator()
 
 interface Props {
@@ -50,7 +51,7 @@ export default function AppNavigator({ onLogout }: Props) {
         <Drawer.Screen name="Trang chủ" component={HomeNavigator} />
         <Drawer.Screen name="Bảng xếp hạng" component={RankingNavigator} />
         <Drawer.Screen name="Lịch sử" component={HistoryNavigator} />
-        <Drawer.Screen name="Hồ sơ" component={ProfileScreen} />
+        <Drawer.Screen name="Hồ sơ" component={() => <ProfileNavigator onLogout={onLogout} />} />
       </Drawer.Navigator>
     </NavigationContainer>
   )

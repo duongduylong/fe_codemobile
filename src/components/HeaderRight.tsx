@@ -17,7 +17,6 @@ export function HeaderRight() {
     navigation.dispatch(DrawerActions.openDrawer())
   }
 
-  // Gọi API lấy thông tin người dùng
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -34,8 +33,7 @@ export function HeaderRight() {
 
         if (response.ok) {
           const data = await response.json()
-          console.log(data)
-          setUsername(data.username || 'Người dùng') // fallback nếu API không có name
+          setUsername(data.username)
         } else {
           console.error('Không thể lấy thông tin người dùng')
         }
