@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import HomeScreen from 'src/screens/HomeScreen'
 import ProfileScreen from 'src/screens/ProfileScreen'
-
+import NoteScreen from 'src/screens/NoteScreen'
 const ProfileStack = createStackNavigator()
 
 interface Props {
@@ -14,8 +14,7 @@ export default function ProfileNavigator({ onLogout }: Props) {
       <ProfileStack.Screen name="Hồ sơ cá nhân">
         {(props) => <ProfileScreen {...props} onLogout={onLogout} />}
       </ProfileStack.Screen>
-      <ProfileStack.Screen name="Ghi chú của tôi" component={HomeScreen} />
-      <ProfileStack.Screen name="Đánh giá của tôi" component={HomeScreen} />
+      <ProfileStack.Screen name="Ghi chú của tôi" component={NoteScreen} />
     </ProfileStack.Navigator>
   )
 }

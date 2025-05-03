@@ -19,9 +19,6 @@ export default function ProfileScreen({ onLogout }: Props) {
   function onNotes() {
     navigation.navigate("Ghi chú của tôi");
   }
-  function onMyReviews() {
-    navigation.navigate("Đánh giá của tôi");
-  }
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -95,9 +92,6 @@ export default function ProfileScreen({ onLogout }: Props) {
       <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.button} onPress={onNotes}>
           <Text style={styles.buttonText}>Ghi chú</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={onMyReviews}>
-          <Text style={styles.buttonText}>Đánh giá của tôi</Text>
         </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>

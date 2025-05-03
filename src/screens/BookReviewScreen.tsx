@@ -24,6 +24,7 @@ export default function BookReviewScreen() {
           const response = await fetch(`${API_URL}/api/reviews/${bookId}`)
           const data = await response.json()
           setReviews(data.reviews || [])
+          console.log(data.reviews);
 
           const bookResponse = await fetch(`${API_URL}/api/books/${bookId}`)
           const bookData = await bookResponse.json()
@@ -92,7 +93,7 @@ export default function BookReviewScreen() {
                   <StarRating rating={item.rating} />
                 </View>
                 <Text style={styles.reviewDate}>
-                  {new Date(item.createdAt).toLocaleDateString('vi-VN')}
+                  {new Date(item.updatedAt).toLocaleDateString('vi-VN')}
                 </Text>
               </View>
               <Text style={styles.reviewText}>{item.comment}</Text>
