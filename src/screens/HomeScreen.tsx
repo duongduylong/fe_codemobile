@@ -15,6 +15,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { API_URL } from 'src/environment';
+import { getAccessToken } from 'src/utils/storage';
 
 const { width } = Dimensions.get('window');
 
@@ -53,13 +54,44 @@ export default function HomeScreen() {
       .catch(error => console.error('Error fetching books:', error));
   }, []);
 
+  // useEffect(() => {
+  //   // Gọi API để lấy danh sách sách xu hướng
+  //   fetch(`${API_URL}/api/books/top/rated`)
+  //     .then(response => response.json())
+  //     .then(data => setTrendingBooks(data))
+  //     .catch(error => console.error('Error fetching books:', error));
+  // }, []);
   useEffect(() => {
-    // Gọi API để lấy danh sách sách xu hướng
-    fetch(`${API_URL}/api/books/top/rated`)
-      .then(response => response.json())
-      .then(data => setTrendingBooks(data))
-      .catch(error => console.error('Error fetching books:', error));
+    const fetchRecommendations = async () => {
+      try {
+        const token = await getAccessToken();
+        if (!token) {
+          console.warn('No token found');
+          return;
+        }
+
+        const response = await fetch(`${API_URL}/recommend`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          console.error('Failed to fetch recommended books');
+          return;
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setTrendingBooks(data);
+      } catch (error) {
+        console.error('Error fetching books:', error);
+      }
+    };
+
+    fetchRecommendations();
   }, []);
+
 
   const handleNavigateBookDetail = (bookId: string) => {
     navigation.navigate('BookDetail', { bookId });
@@ -224,7 +256,7 @@ export default function HomeScreen() {
 
               {/* Reading Trends */}
               <View style={{ marginBottom: 16 }}>
-                <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>Xu hướng đọc</Text>
+                <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>Đề xuất sách</Text>
                 <FlatList
                   horizontal
                   data={trendingBooks}

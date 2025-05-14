@@ -71,7 +71,7 @@ export default function ProfileScreen({ onLogout }: Props) {
         <Text style={styles.label}>Tên người dùng:</Text>
         <Text style={styles.value}>{user?.username}</Text>
       </View>
-      <Text style={styles.sectionTitle}>Thể loại yêu thích</Text>
+      {/* <Text style={styles.sectionTitle}>Thể loại yêu thích</Text>
       <View style={[styles.infoBox, { maxHeight: 150 }]}>
         <ScrollView>
           {user!.favoriteGenres.length > 0 ? (
@@ -84,10 +84,10 @@ export default function ProfileScreen({ onLogout }: Props) {
             <Text style={styles.value}>Chưa có thể loại yêu thích.</Text>
           )}
         </ScrollView>
-      </View>
+      </View> */}
       <Text style={styles.sectionTitle}>Lịch sử</Text>
       <View style={styles.infoBox}>
-        <Text style={styles.value}>Số sách đã đọc: {user!.readHistory.length}</Text>
+        <Text style={styles.value}>Số sách đã đọc: {user!.readHistory.filter(item => item.status === 'finished').length}</Text>
       </View>
       <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.button} onPress={onNotes}>

@@ -46,12 +46,14 @@ export default function AppNavigator({ onLogout }: Props) {
             paddingRight: 15
           }
         }}
-        drawerContent={(props) => <LogoutDrawerItem onLogout={onLogout} props={props} />}
+        // drawerContent={(props) => <LogoutDrawerItem onLogout={onLogout} props={props} />}
       >
         <Drawer.Screen name="Trang chủ" component={HomeNavigator} />
         <Drawer.Screen name="Bảng xếp hạng" component={RankingNavigator} />
         <Drawer.Screen name="Lịch sử" component={HistoryNavigator} />
-        <Drawer.Screen name="Hồ sơ" component={() => <ProfileNavigator onLogout={onLogout} />} />
+        <Drawer.Screen name="Hồ sơ">
+          {() => <ProfileNavigator onLogout={onLogout} />}
+        </Drawer.Screen>
       </Drawer.Navigator>
     </NavigationContainer>
   )
