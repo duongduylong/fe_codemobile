@@ -23,49 +23,48 @@ export default function NoteApp() {
     const token = await getAccessToken()
     const res = await fetch(`${API_URL}/api/notes`, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
     const data = await res.json()
-  
+
     // Đảm bảo dữ liệu trả về có thuộc tính 'notes' và là mảng
     if (data.notes && Array.isArray(data.notes)) {
-      setNotes(data.notes)  // Cập nhật danh sách ghi chú
-      console.log(data.notes);
+      setNotes(data.notes) // Cập nhật danh sách ghi chú
+      console.log(data.notes)
     } else {
-      console.error("Dữ liệu trả về không chứa ghi chú hoặc không phải mảng.")
+      console.error('Dữ liệu trả về không chứa ghi chú hoặc không phải mảng.')
     }
   }
 
   const addNote = async () => {
-    console.log("Adding note:", newNoteContent); // Kiểm tra giá trị nội dung ghi chú
-    if (!newNoteContent) return; // Kiểm tra nếu không có nội dung ghi chú
-  
-    const token = await getAccessToken();
-    const note = { text: newNoteContent }; // Cấu trúc body của ghi chú mới
-  
+    console.log('Adding note:', newNoteContent) // Kiểm tra giá trị nội dung ghi chú
+    if (!newNoteContent) return // Kiểm tra nếu không có nội dung ghi chú
+
+    const token = await getAccessToken()
+    const note = { text: newNoteContent } // Cấu trúc body của ghi chú mới
+
     const res = await fetch(`${API_URL}/api/notes/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify(note),
-    });
-  
-    const data = await res.json();
-    console.log("Response data:", data); // Kiểm tra phản hồi từ API
-  
+      body: JSON.stringify(note)
+    })
+
+    const data = await res.json()
+    console.log('Response data:', data) // Kiểm tra phản hồi từ API
+
     if (res.ok) {
       // Thêm ghi chú vào danh sách
-      setNotes([...notes, data.note]); // Giả sử response chứa ghi chú mới
-      setNewNoteContent(''); // Xóa nội dung ghi chú sau khi lưu
-      setShowModal(false); // Đóng modal
+      setNotes([...notes, data.note]) // Giả sử response chứa ghi chú mới
+      setNewNoteContent('') // Xóa nội dung ghi chú sau khi lưu
+      setShowModal(false) // Đóng modal
     } else {
-      console.error("Failed to add note:", data); // Hiển thị lỗi nếu thêm không thành công
+      console.error('Failed to add note:', data) // Hiển thị lỗi nếu thêm không thành công
     }
-  };
-  
+  }
 
   const toggleStar = async (note) => {
     const res = await fetch(`${API_URL}/api/notes/${note._id}`, {
@@ -76,9 +75,8 @@ export default function NoteApp() {
       body: JSON.stringify({ ...note, isStarred: !note.isStarred })
     })
     const updated = await res.json()
-    setNotes(notes.map(n => (n._id === note._id ? updated : n)))
+    setNotes(notes.map((n) => (n._id === note._id ? updated : n)))
   }
-  
 
   const toggleCheck = async (note) => {
     const res = await fetch(`${API_URL}/api/notes/${note._id}`, {
@@ -89,17 +87,15 @@ export default function NoteApp() {
       body: JSON.stringify({ ...note, isChecked: !note.isChecked })
     })
     const updated = await res.json()
-    setNotes(notes.map(n => (n._id === note._id ? updated : n)))
+    setNotes(notes.map((n) => (n._id === note._id ? updated : n)))
   }
-  
 
   const deleteNote = async (noteId) => {
     await fetch(`${API_URL}/api/notes/${noteId}`, {
       method: 'DELETE'
     })
-    setNotes(notes.filter(n => n._id !== noteId))
+    setNotes(notes.filter((n) => n._id !== noteId))
   }
-  
 
   useEffect(() => {
     fetchNotes()
@@ -111,15 +107,17 @@ export default function NoteApp() {
         <Text style={styles.title}>Ghi chú của Tôi</Text>
 
         <ScrollView contentContainerStyle={styles.noteList}>
-          {notes.map(note => (
+          {notes.map((note) => (
             <View key={note._id} style={styles.noteBox}>
               <TouchableOpacity onPress={() => toggleCheck(note)} style={styles.noteCircle}>
                 {note.isChecked && <Feather name="check" size={14} color="white" />}
               </TouchableOpacity>
 
-              <Text style={[styles.noteText, note.isChecked && styles.checkedText]}>
-                {note.text}
-              </Text>
+              <View style={{ width: 200 }}>
+                <Text style={[styles.noteText, note.isChecked && styles.checkedText]}>
+                  {note.text}
+                </Text>
+              </View>
 
               <TouchableOpacity onPress={() => toggleStar(note)} style={styles.starIcon}>
                 <Feather name="star" size={20} color={note.isStarred ? '#FFD700' : 'white'} />
@@ -191,7 +189,8 @@ const styles = StyleSheet.create({
   noteText: {
     flex: 1,
     color: 'white',
-    fontSize: 16
+    fontSize: 16,
+    flexWrap: 'wrap'
   },
   checkedText: {
     textDecorationLine: 'line-through',
