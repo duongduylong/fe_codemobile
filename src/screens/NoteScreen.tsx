@@ -9,12 +9,10 @@ import {
   View,
   TextInput,
   Modal,
-  Button,
-  TouchableWithoutFeedback
+  Button
 } from 'react-native'
 import { getAccessToken } from 'src/utils/storage'
 import { API_URL } from 'src/environment'
-import { stringUtil } from 'src/utils/string'
 import { TNote } from 'src/models/note'
 import Note from 'src/components/Note'
 import NoteDetailModal from 'src/components/NoteDetailModal'
@@ -101,6 +99,11 @@ export default function NoteApp() {
     setShowDetailModal(false)
   }
 
+  const handleUpdateNote = (updatedNote: TNote) => {
+    console.log('updated!', updatedNote)
+    setNotes((state) => state.map((note) => (note._id === updatedNote._id ? updatedNote : note)))
+  }
+
   useEffect(() => {
     fetchNotes()
   }, [])
@@ -121,7 +124,7 @@ export default function NoteApp() {
         </ScrollView>
 
         <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
-          <Feather name="plus" size={24} color="white" />
+          <Feather name="plus" size={36} color="white" />
         </TouchableOpacity>
 
         <Modal visible={showModal} animationType="slide" transparent>
@@ -144,6 +147,7 @@ export default function NoteApp() {
           note={detailModalInfo}
           onClose={closeDetailModal}
           isShow={showDetailModal}
+          onUpdate={handleUpdateNote}
         />
       </View>
     </LinearGradient>
@@ -190,8 +194,12 @@ const styles = StyleSheet.create({
     right: 20,
     bottom: 40,
     backgroundColor: '#007AFF',
-    padding: 16,
-    borderRadius: 30
+    borderRadius: 9999,
+    height: 54,
+    width: 54,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   modalContainer: {
     flex: 1,

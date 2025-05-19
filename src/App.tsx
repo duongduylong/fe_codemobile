@@ -17,9 +17,9 @@ export default function App() {
         <SafeAreaProvider>
           <StatusBar style="auto" />
           {isLoggedIn ? <AppNavigator onLogout={logout} /> : <LoginScreen onLogin={login} />}
+          <Toast />
         </SafeAreaProvider>
       </GestureHandlerRootView>
-      <Toast />
     </>
   )
 }
