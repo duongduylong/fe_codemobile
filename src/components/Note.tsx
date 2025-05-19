@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: '#2c3e50',
     padding: 12,
-    borderRadius: 10
+    borderRadius: 2
   },
   noteText: {
     flex: 1,

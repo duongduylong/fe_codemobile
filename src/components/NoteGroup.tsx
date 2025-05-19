@@ -18,9 +18,16 @@ interface props {
   setLoading: (state: boolean) => void
 }
 
-export default function NoteGroup({ groupInfo, onUpdate, onDelete, onNotePressed, setLoading }: props) {
+export default function NoteGroup({
+  groupInfo,
+  onUpdate,
+  onDelete,
+  onNotePressed,
+  setLoading
+}: props) {
   const [isDeleteModalShow, setIsDeleteModalShow] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [isExpanded, setIsExpanded] = useState(true)
 
   const toggleStar = async (note: TNote) => {
     setLoading(true)
@@ -61,18 +68,28 @@ export default function NoteGroup({ groupInfo, onUpdate, onDelete, onNotePressed
     setIsDeleteModalShow(false)
   }
 
+  const toggleExpand = () => {
+    setIsExpanded((state) => !state)
+  }
+
   return (
-    <View style={{ position: 'relative' }}>
-      <Text>{groupInfo.date}</Text>
-      {groupInfo.notes.map((note, index) => (
-        <Note
-          key={index}
-          note={note}
-          onStarPressed={() => toggleStar(note)}
-          onDeletePressed={() => onDeletePressed(note._id)}
-          onBodyPressed={() => onNotePressed(note)}
-        />
-      ))}
+    <View style={styles.noteGroup}>
+      <TouchableOpacity onPress={toggleExpand}>
+        <Text style={styles.groupTitle}>{groupInfo.date}</Text>
+      </TouchableOpacity>
+      {isExpanded && (
+        <View style={styles.noteContainer}>
+          {groupInfo.notes.map((note, index) => (
+            <Note
+              key={index}
+              note={note}
+              onStarPressed={() => toggleStar(note)}
+              onDeletePressed={() => onDeletePressed(note._id)}
+              onBodyPressed={() => onNotePressed(note)}
+            />
+          ))}
+        </View>
+      )}
       <Modal
         style={{ position: 'relative' }}
         visible={isDeleteModalShow}
@@ -164,5 +181,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#00000040'
+  },
+
+  noteGroup: {
+    position: 'relative',
+    backgroundColor: colors.orange03,
+    borderRadius: 8
+  },
+
+  groupTitle: {
+    fontSize: font.size.small,
+    color: 'white',
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 4,
+    paddingBottom: 4
+  },
+
+  noteContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 6,
+    padding: 8,
+    backgroundColor: 'white',
   }
 })
