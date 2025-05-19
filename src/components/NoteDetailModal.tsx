@@ -141,12 +141,14 @@ const styles = StyleSheet.create({
     maxHeight: 320
   },
   modalTextContent: {
-    height: 240,
+    // height: 240,
+    maxHeight: 240,
     borderWidth: 1,
     borderColor: '#00000000'
   },
   input: {
-    height: 240,
+    // height: 120,
+    maxHeight: 120,
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: colors.orange03

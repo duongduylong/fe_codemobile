@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { View, Text, Modal, StyleSheet, TouchableOpacity } from 'react-native'
+import Toast from 'react-native-toast-message'
 import Note from 'src/components/Note'
 import { API_URL } from 'src/environment'
 import { TNote } from 'src/models/note'
@@ -45,11 +46,25 @@ export default function NoteGroup({
 
   const deleteNote = async (noteId: string) => {
     setLoading(true)
-    await fetch(`${API_URL}/api/notes/${noteId}`, {
-      method: 'DELETE'
-    })
-    setLoading(false)
-    onDelete(noteId)
+    try {
+      Toast.show({
+        type: 'success',
+        text1: 'Xóa ghi chú thành công'
+      })
+      await fetch(`${API_URL}/api/notes/${noteId}`, {
+        method: 'DELETE'
+      })
+      onDelete(noteId)
+      setLoading(false)
+      setDeletingId(null)
+      setIsDeleteModalShow(false)
+    } catch (e: any) {
+      setLoading(false)
+      Toast.show({
+        type: 'error',
+        text1: 'Có lỗi xảy ra'
+      })
+    }
   }
 
   const onDeletePressed = (noteId: string) => {
@@ -64,8 +79,6 @@ export default function NoteGroup({
 
   const handleConfirmPressed = () => {
     deleteNote(deletingId!)
-    setDeletingId(null)
-    setIsDeleteModalShow(false)
   }
 
   const toggleExpand = () => {
@@ -186,23 +199,27 @@ const styles = StyleSheet.create({
   noteGroup: {
     position: 'relative',
     backgroundColor: colors.orange03,
-    borderRadius: 8
+    paddingTop: 4,
+    paddingLeft: 4,
+    paddingRight: 4,
+    paddingBottom: 8,
   },
 
   groupTitle: {
-    fontSize: font.size.small,
+    fontSize: font.size.normal,
     color: 'white',
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 4,
-    paddingBottom: 4
+    paddingTop: 10,
+    paddingBottom: 10
   },
 
   noteContainer: {
     display: 'flex',
     flexDirection: 'column',
     gap: 6,
-    padding: 8,
+    padding: 6,
     backgroundColor: 'white',
+    borderRadius: 6,
   }
 })

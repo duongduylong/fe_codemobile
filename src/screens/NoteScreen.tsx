@@ -129,102 +129,68 @@ export default function NoteApp() {
   }, [])
 
   return (
-    <LinearGradient colors={['#85b9fd', '#ffffff']} style={styles.container}>
+    <View style={styles.container}>
       {isLoading && (
         <View style={styles.spinnerContainer}>
           <ActivityIndicator size="large" color={colors.orange01} />
         </View>
       )}
-      <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.noteList}>
-          {groupedItems.map((group, index) => (
-            <NoteGroup
-              key={index}
-              groupInfo={group}
-              onUpdate={handleNoteUpdate}
-              onDelete={handleNoteDelete}
-              onNotePressed={handleNotePressed}
-              setLoading={setIsLoading}
-            />
-          ))}
-        </ScrollView>
+      <ScrollView contentContainerStyle={styles.noteList}>
+        {groupedItems.map((group, index) => (
+          <NoteGroup
+            key={index}
+            groupInfo={group}
+            onUpdate={handleNoteUpdate}
+            onDelete={handleNoteDelete}
+            onNotePressed={handleNotePressed}
+            setLoading={setIsLoading}
+          />
+        ))}
+      </ScrollView>
 
-        <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
-          <Feather name="plus" size={36} color="white" />
-        </TouchableOpacity>
+      <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
+        <Feather name="plus" size={36} color="white" />
+      </TouchableOpacity>
 
-        <Modal
-          visible={showModal}
-          animationType="slide"
-          transparent
-          style={{ position: 'relative' }}
-        >
-          {isLoading && (
-            <View style={styles.spinnerContainer}>
-              <ActivityIndicator size="large" color={colors.orange01} />
-            </View>
-          )}
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <TextInput
-                placeholder="Nhập nội dung ghi chú"
-                value={newNoteContent}
-                onChangeText={setNewNoteContent}
-                style={styles.input}
-                multiline
-              />
-              <Button title="Lưu" onPress={addNote} />
-              <View style={{ height: 8 }} />
-              <Button title="Hủy" color="gray" onPress={() => setShowModal(false)} />
-            </View>
+      <Modal visible={showModal} animationType="slide" transparent style={{ position: 'relative' }}>
+        {isLoading && (
+          <View style={styles.spinnerContainer}>
+            <ActivityIndicator size="large" color={colors.orange01} />
           </View>
-        </Modal>
-        <NoteDetailModal
-          note={detailModalInfo}
-          onClose={closeDetailModal}
-          isShow={showDetailModal}
-          onUpdate={handleUpdateNote}
-        />
-      </View>
-    </LinearGradient>
+        )}
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <TextInput
+              placeholder="Nhập nội dung ghi chú"
+              value={newNoteContent}
+              onChangeText={setNewNoteContent}
+              style={styles.input}
+              multiline
+            />
+            <Button title="Lưu" onPress={addNote} />
+            <View style={{ height: 8 }} />
+            <Button title="Hủy" color="gray" onPress={() => setShowModal(false)} />
+          </View>
+        </View>
+      </Modal>
+      <NoteDetailModal
+        note={detailModalInfo}
+        onClose={closeDetailModal}
+        isShow={showDetailModal}
+        onUpdate={handleUpdateNote}
+      />
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     position: 'relative'
   },
   noteList: {
-    gap: 12
-  },
-  noteBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#2c3e50',
-    padding: 12,
-    borderRadius: 10
-  },
-  noteCircle: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderColor: 'white',
-    borderWidth: 1,
-    marginRight: 10,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  noteText: {
-    flex: 1,
-    color: 'white',
-    fontSize: 16,
-    flexWrap: 'wrap'
-  },
-  starIcon: {
-    marginLeft: 10
+    gap: 4,
+    paddingBottom: 96,
   },
   addButton: {
     position: 'absolute',
