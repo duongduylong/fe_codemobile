@@ -9,14 +9,20 @@ import {
   View,
   TextInput,
   Modal,
-  Button
+  Button,
+  TouchableWithoutFeedback
 } from 'react-native'
 import { getAccessToken } from 'src/utils/storage'
 import { API_URL } from 'src/environment'
-import App from 'src/App'
+import { stringUtil } from 'src/utils/string'
+import { TNote } from 'src/models/note'
+import Note from 'src/components/Note'
+import NoteDetailModal from 'src/components/NoteDetailModal'
 export default function NoteApp() {
-  const [notes, setNotes] = useState([])
+  const [notes, setNotes] = useState<TNote[]>([])
   const [showModal, setShowModal] = useState(false)
+  const [showDetailModal, setShowDetailModal] = useState(false)
+  const [detailModalInfo, setDetailModalInfo] = useState<TNote | null>(null)
   const [newNoteContent, setNewNoteContent] = useState('')
 
   const fetchNotes = async () => {
@@ -66,7 +72,7 @@ export default function NoteApp() {
     }
   }
 
-  const toggleStar = async (note) => {
+  const toggleStar = async (note: TNote) => {
     const res = await fetch(`${API_URL}/api/notes/${note._id}`, {
       method: 'PUT',
       headers: {
@@ -78,23 +84,21 @@ export default function NoteApp() {
     setNotes(notes.map((n) => (n._id === note._id ? updated : n)))
   }
 
-  const toggleCheck = async (note) => {
-    const res = await fetch(`${API_URL}/api/notes/${note._id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ ...note, isChecked: !note.isChecked })
-    })
-    const updated = await res.json()
-    setNotes(notes.map((n) => (n._id === note._id ? updated : n)))
-  }
-
-  const deleteNote = async (noteId) => {
+  const deleteNote = async (noteId: string) => {
     await fetch(`${API_URL}/api/notes/${noteId}`, {
       method: 'DELETE'
     })
     setNotes(notes.filter((n) => n._id !== noteId))
+  }
+
+  const handleNotePressed = (note: TNote) => {
+    setDetailModalInfo(note)
+    setShowDetailModal(true)
+  }
+
+  const closeDetailModal = () => {
+    setDetailModalInfo(null)
+    setShowDetailModal(false)
   }
 
   useEffect(() => {
@@ -104,29 +108,15 @@ export default function NoteApp() {
   return (
     <LinearGradient colors={['#85b9fd', '#ffffff']} style={styles.container}>
       <View style={styles.container}>
-        <Text style={styles.title}>Ghi chú của Tôi</Text>
-
         <ScrollView contentContainerStyle={styles.noteList}>
-          {notes.map((note) => (
-            <View key={note._id} style={styles.noteBox}>
-              <TouchableOpacity onPress={() => toggleCheck(note)} style={styles.noteCircle}>
-                {note.isChecked && <Feather name="check" size={14} color="white" />}
-              </TouchableOpacity>
-
-              <View style={{ width: 200 }}>
-                <Text style={[styles.noteText, note.isChecked && styles.checkedText]}>
-                  {note.text}
-                </Text>
-              </View>
-
-              <TouchableOpacity onPress={() => toggleStar(note)} style={styles.starIcon}>
-                <Feather name="star" size={20} color={note.isStarred ? '#FFD700' : 'white'} />
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => deleteNote(note._id)} style={styles.starIcon}>
-                <Feather name="trash-2" size={18} color="white" />
-              </TouchableOpacity>
-            </View>
+          {notes.map((note, index) => (
+            <Note
+              key={index}
+              note={note}
+              onStarPressed={() => toggleStar(note)}
+              onDeletePressed={() => deleteNote(note._id)}
+              onBodyPressed={() => handleNotePressed(note)}
+            />
           ))}
         </ScrollView>
 
@@ -150,6 +140,11 @@ export default function NoteApp() {
             </View>
           </View>
         </Modal>
+        <NoteDetailModal
+          note={detailModalInfo}
+          onClose={closeDetailModal}
+          isShow={showDetailModal}
+        />
       </View>
     </LinearGradient>
   )
@@ -160,18 +155,13 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center'
-  },
   noteList: {
     gap: 12
   },
   noteBox: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: '#2c3e50',
     padding: 12,
     borderRadius: 10
@@ -191,10 +181,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     flexWrap: 'wrap'
-  },
-  checkedText: {
-    textDecorationLine: 'line-through',
-    color: '#ccc'
   },
   starIcon: {
     marginLeft: 10
