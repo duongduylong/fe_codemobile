@@ -232,15 +232,6 @@ const LoginScreen = ({ onLogin }: props) => {
               </TouchableOpacity>
             </View>
           )}
-
-          {/* <View style={styles.socialContainer}> */}
-          {/*   <TouchableOpacity style={styles.facebookButton} onPress={onLogin}> */}
-          {/*     <Text style={styles.buttonText}>Facebook</Text> */}
-          {/*   </TouchableOpacity> */}
-          {/*   <TouchableOpacity style={styles.googleButton} onPress={onLogin}> */}
-          {/*     <Text style={styles.buttonText}>Google</Text> */}
-          {/*   </TouchableOpacity> */}
-          {/* </View> */}
         </View>
       </ScrollView>
     </KeyboardAwareScrollView>
