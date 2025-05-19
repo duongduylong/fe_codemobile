@@ -24,6 +24,8 @@ export default function NoteDetailModal({ note, onClose, onUpdate, isShow }: pro
     setInputValue(note?.text || '')
   }, [note?.text])
 
+  console.log(isEditing)
+
   const onEditPressed = async () => {
     if (isEditing) {
       // Call api to edit note
@@ -40,6 +42,7 @@ export default function NoteDetailModal({ note, onClose, onUpdate, isShow }: pro
         body: JSON.stringify({ ...note, text: inputValue })
       })
       if (res.ok) {
+        setIsEditing(false)
         Toast.show({
           type: 'success',
           text1: 'Chỉnh sửa ghi chú thành công'
@@ -47,7 +50,6 @@ export default function NoteDetailModal({ note, onClose, onUpdate, isShow }: pro
 
         const updated = await res.json()
         setInputValue(updated.text)
-        setIsEditing(false)
         onUpdate(updated)
       } else {
         Toast.show({
@@ -59,6 +61,7 @@ export default function NoteDetailModal({ note, onClose, onUpdate, isShow }: pro
       }
 
       setIsLoading(false)
+      return
     }
     setIsEditing((state) => !state)
   }
